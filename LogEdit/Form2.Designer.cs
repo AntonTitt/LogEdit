@@ -28,76 +28,82 @@
         /// </summary>
         private void InitializeComponent()
         {
-            button1 = new Button();
+            choose = new Button();
             openFileDialog1 = new OpenFileDialog();
-            button2 = new Button();
+            add = new Button();
             textBox1 = new TextBox();
-            checkBox1 = new CheckBox();
-            button3 = new Button();
+            checkBox_counterfx = new CheckBox();
+            DoThgeThingTM = new Button();
             listBox1 = new ListBox();
             SuspendLayout();
             // 
-            // button1
+            // choose
             // 
-            button1.Location = new Point(12, 12);
-            button1.Name = "button1";
-            button1.Size = new Size(158, 29);
-            button1.TabIndex = 0;
-            button1.Text = "Выбрать файл";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            choose.Location = new Point(10, 9);
+            choose.Margin = new Padding(3, 2, 3, 2);
+            choose.Name = "choose";
+            choose.Size = new Size(138, 22);
+            choose.TabIndex = 0;
+            choose.Text = "Выбрать файл";
+            choose.UseVisualStyleBackColor = true;
+            choose.Click += buttonchoose_Click;
             // 
             // openFileDialog1
             // 
             openFileDialog1.FileName = "openFileDialog1";
             // 
-            // button2
+            // add
             // 
-            button2.Location = new Point(12, 47);
-            button2.Name = "button2";
-            button2.Size = new Size(158, 29);
-            button2.TabIndex = 1;
-            button2.Text = "Добавить файл";
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
+            add.Location = new Point(10, 35);
+            add.Margin = new Padding(3, 2, 3, 2);
+            add.Name = "add";
+            add.Size = new Size(138, 22);
+            add.TabIndex = 1;
+            add.Text = "Добавить файл";
+            add.UseVisualStyleBackColor = true;
+            add.Click += buttonAdd_Click;
             // 
             // textBox1
             // 
-            textBox1.Location = new Point(176, 12);
+            textBox1.Location = new Point(154, 9);
+            textBox1.Margin = new Padding(3, 2, 3, 2);
             textBox1.Multiline = true;
             textBox1.Name = "textBox1";
-            textBox1.Size = new Size(612, 29);
+            textBox1.Size = new Size(536, 23);
             textBox1.TabIndex = 2;
             // 
-            // checkBox1
+            // checkBox_counterfx
             // 
-            checkBox1.AutoSize = true;
-            checkBox1.Checked = true;
-            checkBox1.CheckState = CheckState.Checked;
-            checkBox1.Location = new Point(12, 82);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(93, 24);
-            checkBox1.TabIndex = 3;
-            checkBox1.Text = "counterfx";
-            checkBox1.UseVisualStyleBackColor = true;
+            checkBox_counterfx.AutoSize = true;
+            checkBox_counterfx.Checked = true;
+            checkBox_counterfx.CheckState = CheckState.Checked;
+            checkBox_counterfx.Location = new Point(10, 62);
+            checkBox_counterfx.Margin = new Padding(3, 2, 3, 2);
+            checkBox_counterfx.Name = "checkBox_counterfx";
+            checkBox_counterfx.Size = new Size(76, 19);
+            checkBox_counterfx.TabIndex = 3;
+            checkBox_counterfx.Text = "counterfx";
+            checkBox_counterfx.UseVisualStyleBackColor = true;
             // 
-            // button3
+            // DoThgeThingTM
             // 
-            button3.Location = new Point(12, 112);
-            button3.Name = "button3";
-            button3.Size = new Size(158, 31);
-            button3.TabIndex = 5;
-            button3.Text = "делать";
-            button3.UseVisualStyleBackColor = true;
-            button3.Click += button3_Click;
+            DoThgeThingTM.Location = new Point(10, 84);
+            DoThgeThingTM.Margin = new Padding(3, 2, 3, 2);
+            DoThgeThingTM.Name = "DoThgeThingTM";
+            DoThgeThingTM.Size = new Size(138, 23);
+            DoThgeThingTM.TabIndex = 5;
+            DoThgeThingTM.Text = "делать";
+            DoThgeThingTM.UseVisualStyleBackColor = true;
+            DoThgeThingTM.Click += buttonDoTheThingTM_Click;
             // 
             // listBox1
             // 
             listBox1.AllowDrop = true;
             listBox1.FormattingEnabled = true;
-            listBox1.Location = new Point(176, 47);
+            listBox1.Location = new Point(154, 35);
+            listBox1.Margin = new Padding(3, 2, 3, 2);
             listBox1.Name = "listBox1";
-            listBox1.Size = new Size(612, 384);
+            listBox1.Size = new Size(536, 289);
             listBox1.TabIndex = 6;
             listBox1.DragDrop += listBox1_DragDrop;
             listBox1.DragOver += listBox1_DragOver;
@@ -105,15 +111,16 @@
             // 
             // Form2
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(700, 338);
             Controls.Add(listBox1);
-            Controls.Add(button3);
-            Controls.Add(checkBox1);
+            Controls.Add(DoThgeThingTM);
+            Controls.Add(checkBox_counterfx);
             Controls.Add(textBox1);
-            Controls.Add(button2);
-            Controls.Add(button1);
+            Controls.Add(add);
+            Controls.Add(choose);
+            Margin = new Padding(3, 2, 3, 2);
             Name = "Form2";
             Text = "Form2";
             ResumeLayout(false);
@@ -122,12 +129,12 @@
 
         #endregion
 
-        private Button button1;
+        private Button choose;
         private OpenFileDialog openFileDialog1;
-        private Button button2;
+        private Button add;
         private TextBox textBox1;
-        private CheckBox checkBox1;
-        private Button button3;
+        private CheckBox checkBox_counterfx;
+        private Button DoThgeThingTM;
         private ListBox listBox1;
     }
 }

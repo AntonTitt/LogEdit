@@ -17,7 +17,7 @@ namespace LogEdit
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonchoose_Click(object sender, EventArgs e)
         {
             openFileDialog1.ShowDialog(this);
             if (openFileDialog1.FileName == "openFileDialog1") { return; }
@@ -25,7 +25,7 @@ namespace LogEdit
             textBox1.Text = openFileDialog1.FileName;
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void buttonAdd_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.FileName == "openFileDialog1") { return; }
             foreach (string logName in logNames) { if (logName == openFileDialog1.FileName) { return; } }
@@ -34,18 +34,24 @@ namespace LogEdit
             listBox1.Items.Add(openFileDialog1.FileName + Environment.NewLine);
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void buttonDoTheThingTM_Click(object sender, EventArgs e)
         {
             if (logNames.Count < 2) { return; }
 
             List<StreamReader> readers = [];
             foreach (string logName in logNames) { readers.Add(new StreamReader(logName)); }
 
+            using (StreamWriter sw = new("../../../../combat.log"))
+            {
+                foreach (StreamReader reader in readers)
+                {
+                    sw.Write(reader.ReadToEnd());
+                }
+            }
 
 
 
-
-            logNames.Clear();
+            logNames.Clear(); listBox1.Items.Clear();
             counter = 0;
         }
 
@@ -85,5 +91,6 @@ namespace LogEdit
                 }
             }
         }
+
     }
 }
