@@ -35,6 +35,7 @@
             checkBox_counterfx = new CheckBox();
             DoThgeThingTM = new Button();
             listBox1 = new ListBox();
+            button1 = new Button();
             SuspendLayout();
             // 
             // choose
@@ -109,11 +110,22 @@
             listBox1.DragOver += listBox1_DragOver;
             listBox1.MouseDown += listBox1_MouseDown;
             // 
+            // button1
+            // 
+            button1.Location = new Point(44, 165);
+            button1.Name = "button1";
+            button1.Size = new Size(75, 23);
+            button1.TabIndex = 7;
+            button1.Text = "button1";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
             // Form2
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(700, 338);
+            Controls.Add(button1);
             Controls.Add(listBox1);
             Controls.Add(DoThgeThingTM);
             Controls.Add(checkBox_counterfx);
@@ -136,5 +148,6 @@
         private CheckBox checkBox_counterfx;
         private Button DoThgeThingTM;
         private ListBox listBox1;
+        private Button button1;
     }
 }
