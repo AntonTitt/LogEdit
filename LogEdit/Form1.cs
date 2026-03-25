@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+using static LogEdit.BattleDef;
 namespace LogEdit
 {
     public partial class Form1 : Form
@@ -35,7 +37,7 @@ namespace LogEdit
                 TabIndex = tabindx++,
                 Text = "Выбери файл",
                 UseVisualStyleBackColor = true
-            }; 
+            };
             Button Form2Button = new()
             {
                 Location = new Point(160, 5),
@@ -96,7 +98,17 @@ namespace LogEdit
                     }
                     if (relevantPart.StartsWith(" player "))
                     {
+                        Match match = Regex.Match(relevantPart, @"player\s*(\d+)", RegexOptions.IgnoreCase);
+                        int p = 0;
 
+                        if (match.Success && match.Groups[1].Success)
+                        {
+                            string numberStr = match.Groups[1].Value;
+
+                            // Пытаемся преобразовать в int
+                            if (int.TryParse(numberStr, out int number))
+                                p = number;
+                        }
                     }
                     if (relevantPart.StartsWith("====== TestDrive started ======"))
                     {
