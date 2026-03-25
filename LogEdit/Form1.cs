@@ -55,10 +55,8 @@ namespace LogEdit
         void ShowDial(object sender, EventArgs e)
         {
             openFileDialog1.ShowDialog();
-            if (openFileDialog1.FileName == "openFileDialog1")
-            {
-                return;
-            }
+            if (openFileDialog1.FileName == "openFileDialog1") return;
+
             using (StreamReader sr = new(openFileDialog1.FileName))
             {
                 while (!sr.EndOfStream)
@@ -98,6 +96,7 @@ namespace LogEdit
                     }
                     if (relevantPart.StartsWith(" player "))
                     {
+
                     }
                     if (relevantPart.StartsWith("====== TestDrive started ======"))
                     {
