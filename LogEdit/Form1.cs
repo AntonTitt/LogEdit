@@ -6,6 +6,8 @@ namespace LogEdit
     {
         int tabindx = 0;
         List<int> counters = new();
+        List<Battle> battles = new(15);
+        int battlindx = 0;
         public Form1()
         {
             InitializeComponent();
@@ -59,8 +61,11 @@ namespace LogEdit
             openFileDialog1.ShowDialog();
             if (openFileDialog1.FileName == "openFileDialog1") return;
 
+            Battle battle = new();
             using (StreamReader sr = new(openFileDialog1.FileName))
             {
+                List<Player> players1 = [];
+                List<Player> players2 = [];
                 while (!sr.EndOfStream)
                 {
                     string line = sr.ReadLine();
@@ -69,8 +74,23 @@ namespace LogEdit
                     if (relevantPart.StartsWith("====== starting level ======"))
                     {
                     }
-                    if (relevantPart.StartsWith("===== Gameplay "))
+                    if (relevantPart.StartsWith("===== Gameplay '"))
                     {
+                        battle.Mode = relevantPart.Split(' ')[2];
+                        battle.Map = relevantPart.Split(' ')[5];
+                    }
+                    if (relevantPart.StartsWith("===== Gameplay finish"))
+                    {
+                        battle.Players1 = players1.ToArray();
+                        battle.Players2 = players2.ToArray();
+                        battles.Add(battle);
+                        for (int i = 0; i < battles.Count; i++)
+                        {
+                            for (int j = 0; j < 8; j++)
+                            {
+                                dataGridView1.Rows.Add(battle.Players1[j].Nikname, "CarPart_Gun_CannonLong_Relic", "10719", 1, "10719", "CarPart_Gun_CannonLong_Relic", battle.Players2[j].Nikname);
+                            }
+                        }
                     }
                     if (relevantPart.StartsWith("Spawn player "))
                     {
@@ -96,10 +116,11 @@ namespace LogEdit
                     if (relevantPart.StartsWith("Stripe "))
                     {
                     }
-                    if (relevantPart.StartsWith(" player "))
+                    if (relevantPart.StartsWith("\tplayer "))
                     {
-                        Match match = Regex.Match(relevantPart, @"player\s*(\d+)", RegexOptions.IgnoreCase);
-                        int p = 0;
+
+                        Match match = Regex.Match(relevantPart, @"team:\s*(\d+)", RegexOptions.IgnoreCase);
+                        int teamnum = 0;
 
                         if (match.Success && match.Groups[1].Success)
                         {
@@ -107,7 +128,15 @@ namespace LogEdit
 
                             // Пытаемся преобразовать в int
                             if (int.TryParse(numberStr, out int number))
-                                p = number;
+                                teamnum = number;
+                        }
+                        if (teamnum == 1)
+                        {
+                            players1.Add(new Player(relevantPart[(relevantPart.IndexOf("nickname:") + 10)..(relevantPart.IndexOf(' ', (relevantPart.IndexOf("nickname:") + 10)))], "", 0, 0));
+                        }
+                        else
+                        {
+                            players2.Add(new Player(relevantPart[(relevantPart.IndexOf("nickname:") + 10)..(relevantPart.IndexOf(' ', (relevantPart.IndexOf("nickname:") + 10)))], "", 0, 0));
                         }
                     }
                     if (relevantPart.StartsWith("====== TestDrive started ======"))
@@ -118,6 +147,7 @@ namespace LogEdit
                     }
                 }
             }
+
 
         }
 
