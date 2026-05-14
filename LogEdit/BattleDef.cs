@@ -14,12 +14,12 @@ namespace LogEdit
             public Player[] Players2 { get; set; } = players2;
             public string Map { get; set; } = map;
             public string Mode { get; set; } = mode;
-            public string Outcome { get; set; } = outcome;// win1, win2, draw
+            public string Outcome { get; set; } = outcome;// winner team 1, winner team 2, winner team 0 (draw)
         }
-        public struct Player(string nikname, string weapon, int damage, int damagetaken)
+        public struct Player(string nikname, string[] weapons, int damage, int damagetaken)
         {
             public string Nikname { get; set; } = nikname;
-            public string Weapon { get; set; } = weapon;
+            public string[] Weapons { get; set; } = weapons;
             public int Damage { get; set; } = damage;
             public int Damagetaken { get; set; } = damagetaken;
         }

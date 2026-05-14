@@ -1,12 +1,14 @@
+using System.Globalization;
 using System.Text.RegularExpressions;
-using static LogEdit.BattleDef;
+using static LogEdit.Player;
+using static LogEdit.Battle;
 namespace LogEdit
 {
     public partial class Form1 : Form
     {
         int tabindx = 0;
         List<int> counters = new();
-        List<Battle> battles = new(15);
+        List<Battle> battles = new();
         int battlindx = 0;
         public Form1()
         {
@@ -66,6 +68,7 @@ namespace LogEdit
             {
                 List<Player> players1 = [];
                 List<Player> players2 = [];
+                List<string> weapons = [];
                 while (!sr.EndOfStream)
                 {
                     string line = sr.ReadLine();
@@ -74,15 +77,16 @@ namespace LogEdit
                     if (relevantPart.StartsWith("====== starting level ======"))
                     {
                     }
-                    if (relevantPart.StartsWith("===== Gameplay '"))
+                    else if (relevantPart.StartsWith("===== Gameplay '"))
                     {
                         battle.Mode = relevantPart.Split(' ')[2];
                         battle.Map = relevantPart.Split(' ')[5];
                     }
-                    if (relevantPart.StartsWith("===== Gameplay finish"))
+                    else if (relevantPart.StartsWith("===== Gameplay finish"))
                     {
                         battle.Players1 = players1.ToArray();
                         battle.Players2 = players2.ToArray();
+                        battle.Outcome = relevantPart.Split(',')[2];
                         battles.Add(battle);
                         for (int i = 0; i < battles.Count; i++)
                         {
@@ -92,31 +96,60 @@ namespace LogEdit
                             }
                         }
                     }
-                    if (relevantPart.StartsWith("Spawn player "))
+                    else if (relevantPart.StartsWith("Spawn player "))
                     {
                     }
-                    if (relevantPart.StartsWith("Active battle started."))
+                    else if (relevantPart.StartsWith("Active battle started."))
                     {
                     }
-                    if (relevantPart.StartsWith("Damage."))
+                    else if (relevantPart.StartsWith("Damage."))
+                    {
+                        string attaker = relevantPart.Split(",")[1][11..].Trim(' ');
+                        string weapon = relevantPart.Split(",")[2][8..];
+
+                        Match match = Regex.Match(relevantPart, @"damage:\s*(\d+\.\d+)", RegexOptions.IgnoreCase);
+                        float damage = 0;
+
+                        if (match.Success && match.Groups[1].Success)
+                        {
+                            string numberStr = match.Groups[1].Value;
+
+                            if (float.TryParse(numberStr, CultureInfo.InvariantCulture, out float number))
+                                damage = number;
+                        }
+                        for (int i = 0; i < players1.Count; i++)
+                        {
+                            if (players1[i].Nikname == attaker)
+                            {
+                                players1[i].Weapons.Add(weapon);
+                            }
+                        }
+                        for (int i = 0; i < players2.Count; i++)
+                        {
+                            if (players2[i].Nikname == attaker)
+                            {
+                                players2[i].Weapons.Add(weapon);
+                            }
+                        }
+
+
+                    }
+                    else if (relevantPart.StartsWith("Spawn mob. "))
                     {
                     }
-                    if (relevantPart.StartsWith("Spawn mob. "))
+                    else if (relevantPart.StartsWith("Score:"))
                     {
                     }
-                    if (relevantPart.StartsWith("Score:"))
+                    else if (relevantPart.StartsWith("Kill."))
                     {
                     }
-                    if (relevantPart.StartsWith("Kill."))
+                    else if (relevantPart.StartsWith("\t assist"))
                     {
                     }
-                    if (relevantPart.StartsWith("  assist"))
+                    else if (relevantPart.StartsWith("Stripe "))
                     {
                     }
-                    if (relevantPart.StartsWith("Stripe "))
-                    {
-                    }
-                    if (relevantPart.StartsWith("\tplayer "))
+                    else if (relevantPart.StartsWith("\tplayer "))
                     {
 
                         Match match = Regex.Match(relevantPart, @"team:\s*(\d+)", RegexOptions.IgnoreCase);
@@ -132,20 +165,25 @@ namespace LogEdit
                         }
                         if (teamnum == 1)
                         {
-                            players1.Add(new Player(relevantPart[(relevantPart.IndexOf("nickname:") + 10)..(relevantPart.IndexOf(' ', (relevantPart.IndexOf("nickname:") + 10)))], "", 0, 0));
+                            players1.Add(new Player(relevantPart[(relevantPart.IndexOf("nickname:") + 10)..(relevantPart.IndexOf(' ', (relevantPart.IndexOf("nickname:") + 10)))], [""], 0, 0));
                         }
                         else
                         {
-                            players2.Add(new Player(relevantPart[(relevantPart.IndexOf("nickname:") + 10)..(relevantPart.IndexOf(' ', (relevantPart.IndexOf("nickname:") + 10)))], "", 0, 0));
+                            players2.Add(new Player(relevantPart[(relevantPart.IndexOf("nickname:") + 10)..(relevantPart.IndexOf(' ', (relevantPart.IndexOf("nickname:") + 10)))], [""], 0, 0));
                         }
                     }
-                    if (relevantPart.StartsWith("====== TestDrive started ======"))
+                    else if (relevantPart.StartsWith("====== TestDrive started ======"))
                     {
                     }
-                    if (relevantPart.StartsWith("====== TestDrive finish ======"))
+                    else if (relevantPart.StartsWith("====== TestDrive finish ======"))
                     {
+                    }
+                    else
+                    {
+                        MessageBox.Show(line);
                     }
                 }
+
             }
 
 
