@@ -63,12 +63,14 @@ namespace LogEdit
             openFileDialog1.ShowDialog();
             if (openFileDialog1.FileName == "openFileDialog1") return;
 
-            Battle battle = new();
             using (StreamReader sr = new(openFileDialog1.FileName))
             {
                 List<Player> players1 = [];
                 List<Player> players2 = [];
                 List<string> weapons = [];
+                Battle battle = new();
+                int current_round = 1;
+
                 while (!sr.EndOfStream)
                 {
                     string line = sr.ReadLine();
@@ -79,21 +81,89 @@ namespace LogEdit
                     }
                     else if (relevantPart.StartsWith("===== Gameplay '"))
                     {
+                        battle.Rounds.Add(new Round());
                         battle.Mode = relevantPart.Split(' ')[2];
                         battle.Map = relevantPart.Split(' ')[5];
                     }
                     else if (relevantPart.StartsWith("===== Gameplay finish"))
                     {
-                        battle.Players1 = players1.ToArray();
-                        battle.Players2 = players2.ToArray();
-                        battle.Outcome = relevantPart.Split(',')[2];
+                        battle.Rounds[current_round - 1].Players1 = players1.ToArray();
+                        battle.Rounds[current_round - 1].Players2 = players2.ToArray();
+                        battle.Rounds[current_round - 1].Outcome = relevantPart.Split(',')[2];
+                        players1.Clear();
+                        players2.Clear();
                         battles.Add(battle);
                         for (int i = 0; i < battles.Count; i++)
                         {
-                            for (int j = 0; j < 8; j++)
+                            //for (int j = 0; j < 8; j++){dataGridView1.Rows.Add(battle.Rounds[current_round].Players1[j].Nikname, battle.Rounds[current_round].Players1[j].Weapons[battle.Rounds[current_round].Players1[j].Weapons.Count - 1], battle.Rounds[current_round].Players1[j].Damage, 1, battle.Rounds[current_round].Players2[j].Damage, battle.Rounds[current_round].Players2[j].Weapons[battle.Rounds[current_round].Players2[j].Weapons.Count - 1], battle.Rounds[current_round].Players2[j].Nikname); }
+                            for (int j = 0; j < battles[i].Rounds.Count; j++)
                             {
-                                dataGridView1.Rows.Add(battle.Players1[j].Nikname, "CarPart_Gun_CannonLong_Relic", "10719", 1, "10719", "CarPart_Gun_CannonLong_Relic", battle.Players2[j].Nikname);
+                                if (battles[i].Rounds[j].Players1.Count() == battles[i].Rounds[j].Players2.Count())
+                                {
+                                    for (int k = 0; k < battles[i].Rounds[j].Players1.Count(); k++)
+                                    {
+                                        dataGridView1.Rows.Add(battles[i].Rounds[j].Players1[k].Nikname, battles[i].Rounds[j].Players1[k].Weapons[battles[i].Rounds[j].Players1[k].Weapons.Count - 1], battles[i].Rounds[j].Players1[k].Damage, j + 1, battles[i].Rounds[j].Players2[k].Damage, battles[i].Rounds[j].Players2[k].Weapons[battles[i].Rounds[j].Players2[k].Weapons.Count - 1], battles[i].Rounds[j].Players2[k].Nikname);
+                                    }
+                                }
+                                if (battles[i].Rounds[j].Players1.Count() < battles[i].Rounds[j].Players2.Count())
+                                {
+                                    //сделать отображение при неровных командах
+                                }
+                                if (battles[i].Rounds[j].Players1.Count() > battles[i].Rounds[j].Players2.Count())
+                                {
+
+                                }
+
                             }
+                        }
+                    }
+                    else if (relevantPart.StartsWith("===== Best Of N "))
+                    {
+                        battle.Rounds.Add(new Round());
+                        battle.Rounds[current_round - 1].Players1 = players1.ToArray();
+                        battle.Rounds[current_round - 1].Players2 = players2.ToArray();
+                        battle.Rounds[current_round - 1].Outcome = relevantPart.Split(',')[2];
+                        players1.Clear();
+                        players2.Clear();
+                        Match match = Regex.Match(relevantPart, @"round\s*(\d+)", RegexOptions.IgnoreCase);
+                        int round = 0;
+
+                        if (match.Success && match.Groups[1].Success)
+                        {
+                            string numberStr = match.Groups[1].Value;
+
+                            // Пытаемся преобразовать в int
+                            if (int.TryParse(numberStr, out int number))
+                                round = number;
+                        }
+
+                        current_round = round + 1;
+
+                        match = Regex.Match(relevantPart, @"winner team\s*(\d+)", RegexOptions.IgnoreCase);
+                        int team = 0;
+
+                        if (match.Success && match.Groups[1].Success)
+                        {
+                            string numberStr = match.Groups[1].Value;
+
+                            // Пытаемся преобразовать в int
+                            if (int.TryParse(numberStr, out int number))
+                                team = number;
+                        }
+                        switch (team)
+                        {
+                            case 1:
+                                battle.Rounds[current_round - 1].Outcome = "winner team 1";
+                                break;
+                            case 2:
+                                battle.Rounds[current_round - 1].Outcome = "winner team 2";
+                                break;
+                            case 0:
+                                battle.Rounds[current_round - 1].Outcome = "winner team 0";
+                                break;
+                            default:
+                                battle.Rounds[current_round - 1].Outcome = "winner team -1";
+                                break;
                         }
                     }
                     else if (relevantPart.StartsWith("Spawn player "))
@@ -117,18 +187,60 @@ namespace LogEdit
                             if (float.TryParse(numberStr, CultureInfo.InvariantCulture, out float number))
                                 damage = number;
                         }
+                        bool flag = true;
+                        bool flag2 = true;
                         for (int i = 0; i < players1.Count; i++)
                         {
                             if (players1[i].Nikname == attaker)
                             {
-                                players1[i].Weapons.Add(weapon);
+                                foreach (string s in relevantPart.Split(',')[3].Split('|'))
+                                {
+                                    if (s == "SUICIDE" || s == "CONTACT")
+                                    {
+                                        flag = false;
+                                        flag2 = false;
+                                    }
+                                }
+                                foreach (string w in players1[i].Weapons)
+                                {
+                                    if (weapon == w)
+                                    {
+                                        flag2 = false;
+                                    }
+                                }
+                                if (flag2)
+                                    players1[i].Weapons.Add(weapon[9..^1]);
+
+                                if (flag)
+                                    players1[i].Damage += damage;
                             }
                         }
+                        flag2 = true;
+                        flag = true;
                         for (int i = 0; i < players2.Count; i++)
                         {
                             if (players2[i].Nikname == attaker)
                             {
-                                players2[i].Weapons.Add(weapon);
+                                foreach (string s in relevantPart.Split(',')[3].Split('|'))
+                                {
+                                    if (s == "SUICIDE" || s == "CONTACT")
+                                    {
+                                        flag = false;
+                                        flag2 = false;
+                                    }
+                                }
+                                foreach (string w in players2[i].Weapons)
+                                {
+                                    if (weapon == w)
+                                    {
+                                        flag2 = false;
+                                    }
+                                }
+                                if (flag2)
+                                    players2[i].Weapons.Add(weapon[9..^1]);
+
+                                if (flag)
+                                    players2[i].Damage += damage;
                             }
                         }
 
@@ -165,11 +277,13 @@ namespace LogEdit
                         }
                         if (teamnum == 1)
                         {
-                            players1.Add(new Player(relevantPart[(relevantPart.IndexOf("nickname:") + 10)..(relevantPart.IndexOf(' ', (relevantPart.IndexOf("nickname:") + 10)))], [""], 0, 0));
+                            players1.Add(new Player(relevantPart.Split(',')[3][11..].Trim(' '), [""], 0, 0));
+                            //players1.Add(new Player(relevantPart[(relevantPart.IndexOf("nickname:") + 10)..(relevantPart.IndexOf(' ', (relevantPart.IndexOf("nickname:") + 10)))], [""], 0, 0));
                         }
                         else
                         {
-                            players2.Add(new Player(relevantPart[(relevantPart.IndexOf("nickname:") + 10)..(relevantPart.IndexOf(' ', (relevantPart.IndexOf("nickname:") + 10)))], [""], 0, 0));
+                            players2.Add(new Player(relevantPart.Split(',')[3][11..].Trim(' '), [""], 0, 0));
+                            //players2.Add(new Player(relevantPart[(relevantPart.IndexOf("nickname:") + 10)..(relevantPart.IndexOf(' ', (relevantPart.IndexOf("nickname:") + 10)))], [""], 0, 0));
                         }
                     }
                     else if (relevantPart.StartsWith("====== TestDrive started ======"))

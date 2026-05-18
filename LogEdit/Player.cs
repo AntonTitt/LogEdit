@@ -9,8 +9,8 @@ namespace LogEdit
     {
         public string Nikname;
         public List<string> Weapons;
-        public int Damage;
-        public int Damagetaken;
+        public float Damage;
+        public float Damagetaken;
 
         public Player(string nikname, List<string> weapons, int damage, int damagetaken)
         {
