@@ -6,14 +6,16 @@ namespace LogEdit
 {
     public partial class Form1 : Form
     {
-        int tabindx = 0;
+        //int tabindx = 3;
         List<int> counters = new();
         List<Battle> battles = new();
+        List<List<string>> battlesData = [];//todo сделать заполнялку этого листа баттлами
         int battlindx = 0;
+        List<int> duration = [];
+        int maxplayers = 0;
         public Form1()
         {
             InitializeComponent();
-            InitializeButtons();
 
 
         }
@@ -30,38 +32,13 @@ namespace LogEdit
         // ["\tplayer "]
         // ["====== TestDrive started ======"]
         // ["====== TestDrive finish ======"]
-        void InitializeButtons()
-        {
 
-            Button ShowDialButton = new()
-            {
-                Location = new Point(5, 5),
-                Name = "ShowDialButton",
-                Size = new Size(150, 30),
-                TabIndex = tabindx++,
-                Text = "Выбери файл",
-                UseVisualStyleBackColor = true
-            };
-            Button Form2Button = new()
-            {
-                Location = new Point(160, 5),
-                Name = "Form2Button",
-                Size = new Size(150, 30),
-                TabIndex = tabindx++,
-                Text = "Склеить логи",
-                UseVisualStyleBackColor = true
-            };
-            ShowDialButton.Click += ShowDial;
-            Form2Button.Click += ShowForm2;
-
-
-            Controls.Add(ShowDialButton);
-            Controls.Add(Form2Button);
-        }
         void ShowDial(object sender, EventArgs e)
         {
             openFileDialog1.ShowDialog();
             if (openFileDialog1.FileName == "openFileDialog1") return;
+            battles.Clear();
+            dataGridView1.Rows.Clear();
 
             using (StreamReader sr = new(openFileDialog1.FileName))
             {
@@ -74,10 +51,17 @@ namespace LogEdit
                 while (!sr.EndOfStream)
                 {
                     string line = sr.ReadLine();
-                    string relevantPart = line.Substring(15);
+                    string relevantPart = line[15..];
 
                     if (relevantPart.StartsWith("====== starting level ======"))
                     {
+                        if (relevantPart.Contains("hangar")) // если бой завершился некорректно
+                        {
+                            players1.Clear();
+                            players2.Clear();
+                            battle = new();
+                            current_round = 1;
+                        }
                     }
                     else if (relevantPart.StartsWith("===== Gameplay '"))
                     {
@@ -87,41 +71,20 @@ namespace LogEdit
                     }
                     else if (relevantPart.StartsWith("===== Gameplay finish"))
                     {
-                        battle.Rounds[current_round - 1].Players1 = players1.ToArray();
-                        battle.Rounds[current_round - 1].Players2 = players2.ToArray();
+                        battle.Rounds[current_round - 1].Players1 = [.. players1];
+                        battle.Rounds[current_round - 1].Players2 = [.. players2];
                         battle.Rounds[current_round - 1].Outcome = relevantPart.Split(',')[2];
                         players1.Clear();
                         players2.Clear();
                         battles.Add(battle);
-                        for (int i = 0; i < battles.Count; i++)
-                        {
-                            //for (int j = 0; j < 8; j++){dataGridView1.Rows.Add(battle.Rounds[current_round].Players1[j].Nikname, battle.Rounds[current_round].Players1[j].Weapons[battle.Rounds[current_round].Players1[j].Weapons.Count - 1], battle.Rounds[current_round].Players1[j].Damage, 1, battle.Rounds[current_round].Players2[j].Damage, battle.Rounds[current_round].Players2[j].Weapons[battle.Rounds[current_round].Players2[j].Weapons.Count - 1], battle.Rounds[current_round].Players2[j].Nikname); }
-                            for (int j = 0; j < battles[i].Rounds.Count; j++)
-                            {
-                                if (battles[i].Rounds[j].Players1.Count() == battles[i].Rounds[j].Players2.Count())
-                                {
-                                    for (int k = 0; k < battles[i].Rounds[j].Players1.Count(); k++)
-                                    {
-                                        dataGridView1.Rows.Add(battles[i].Rounds[j].Players1[k].Nikname, battles[i].Rounds[j].Players1[k].Weapons[battles[i].Rounds[j].Players1[k].Weapons.Count - 1], battles[i].Rounds[j].Players1[k].Damage, j + 1, battles[i].Rounds[j].Players2[k].Damage, battles[i].Rounds[j].Players2[k].Weapons[battles[i].Rounds[j].Players2[k].Weapons.Count - 1], battles[i].Rounds[j].Players2[k].Nikname);
-                                    }
-                                }
-                                if (battles[i].Rounds[j].Players1.Count() < battles[i].Rounds[j].Players2.Count())
-                                {
-                                    //сделать отображение при неровных командах
-                                }
-                                if (battles[i].Rounds[j].Players1.Count() > battles[i].Rounds[j].Players2.Count())
-                                {
-
-                                }
-
-                            }
-                        }
+                        battle = new();
+                        current_round = 1;
                     }
                     else if (relevantPart.StartsWith("===== Best Of N "))
                     {
                         battle.Rounds.Add(new Round());
-                        battle.Rounds[current_round - 1].Players1 = players1.ToArray();
-                        battle.Rounds[current_round - 1].Players2 = players2.ToArray();
+                        battle.Rounds[current_round - 1].Players1 = [.. players1];
+                        battle.Rounds[current_round - 1].Players2 = [.. players2];
                         battle.Rounds[current_round - 1].Outcome = relevantPart.Split(',')[2];
                         players1.Clear();
                         players2.Clear();
@@ -150,21 +113,13 @@ namespace LogEdit
                             if (int.TryParse(numberStr, out int number))
                                 team = number;
                         }
-                        switch (team)
+                        battle.Rounds[current_round - 1].Outcome = team switch
                         {
-                            case 1:
-                                battle.Rounds[current_round - 1].Outcome = "winner team 1";
-                                break;
-                            case 2:
-                                battle.Rounds[current_round - 1].Outcome = "winner team 2";
-                                break;
-                            case 0:
-                                battle.Rounds[current_round - 1].Outcome = "winner team 0";
-                                break;
-                            default:
-                                battle.Rounds[current_round - 1].Outcome = "winner team -1";
-                                break;
-                        }
+                            1 => "winner team 1",
+                            2 => "winner team 2",
+                            0 => "winner team 0",
+                            _ => "winner team -1",
+                        };
                     }
                     else if (relevantPart.StartsWith("Spawn player "))
                     {
@@ -286,6 +241,9 @@ namespace LogEdit
                             //players2.Add(new Player(relevantPart[(relevantPart.IndexOf("nickname:") + 10)..(relevantPart.IndexOf(' ', (relevantPart.IndexOf("nickname:") + 10)))], [""], 0, 0));
                         }
                     }
+                    else if (relevantPart.StartsWith("Player "))//мне както раз попалось "02:12:05.812 | Player Mary activated console!" интересно как так вышло
+                    {
+                    }
                     else if (relevantPart.StartsWith("====== TestDrive started ======"))
                     {
                     }
@@ -297,6 +255,35 @@ namespace LogEdit
                         MessageBox.Show(line);
                     }
                 }
+                for (int i = 0; i < battles.Count; i++)
+                {
+                    for (int j = 0; j < battles[i].Rounds.Count; j++)
+                    {
+                        if (battles[i].Rounds[j].Players1.Count() == battles[i].Rounds[j].Players2.Count())
+                        {
+                            for (int k = 0; k < battles[i].Rounds[j].Players1.Count(); k++)
+                            {
+                                dataGridView1.Rows.Add(battles[i].Rounds[j].Players1[k].Nikname, battles[i].Rounds[j].Players1[k].Weapons[battles[i].Rounds[j].Players1[k].Weapons.Count - 1],
+                                    battles[i].Rounds[j].Players1[k].Damage, j + 1, battles[i].Rounds[j].Players2[k].Damage, battles[i].Rounds[j].Players2[k].Weapons[battles[i].Rounds[j].Players2[k].Weapons.Count - 1],
+                                    battles[i].Rounds[j].Players2[k].Nikname);
+                            }
+                        }
+                        if (battles[i].Rounds[j].Players1.Count() < battles[i].Rounds[j].Players2.Count())
+                        {
+                            //todo сделать отображение при неровных командах
+                        }
+                        if (battles[i].Rounds[j].Players1.Count() > battles[i].Rounds[j].Players2.Count())
+                        {
+
+                        }
+
+                        maxplayers += Math.Max(battles[i].Rounds[j].Players1.Count(), battles[i].Rounds[j].Players2.Count());
+                    }
+                    duration.Add(maxplayers++);
+                    var row = new DataGridViewRow();
+                    row.DefaultCellStyle.BackColor = Color.Coral;
+                    dataGridView1.Rows.Add(row);
+                }
 
             }
 
@@ -307,6 +294,26 @@ namespace LogEdit
         {
             var mForm = new Form2();
             mForm.Show();
+        }
+
+        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            for (int i = 0; i < dataGridView1.Rows.Count; i++)
+            {
+                if (dataGridView1.Rows[i].Cells[7].Value is true)
+                {
+                    if (duration.Contains(i))
+                    {
+
+                    }
+                }
+            }
+        }
+
+
+        private void buttonDelete_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

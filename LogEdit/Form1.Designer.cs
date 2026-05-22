@@ -37,6 +37,10 @@
             damage2 = new DataGridViewTextBoxColumn();
             weapon2 = new DataGridViewTextBoxColumn();
             nick2 = new DataGridViewTextBoxColumn();
+            Delete = new DataGridViewCheckBoxColumn();
+            buttonShowDial = new Button();
+            buttonForm2 = new Button();
+            buttonDelete = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -49,11 +53,12 @@
             dataGridView1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { nick1, weapon1, damage1, round, damage2, weapon2, nick2 });
+            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { nick1, weapon1, damage1, round, damage2, weapon2, nick2, Delete });
             dataGridView1.Location = new Point(12, 42);
             dataGridView1.Name = "dataGridView1";
-            dataGridView1.Size = new Size(1074, 519);
+            dataGridView1.Size = new Size(1501, 876);
             dataGridView1.TabIndex = 0;
+            dataGridView1.CellValueChanged += dataGridView1_CellValueChanged;
             // 
             // nick1
             // 
@@ -90,11 +95,50 @@
             nick2.HeaderText = "nick2";
             nick2.Name = "nick2";
             // 
+            // Delete
+            // 
+            Delete.HeaderText = "удалить";
+            Delete.Name = "Delete";
+            Delete.Resizable = DataGridViewTriState.True;
+            // 
+            // buttonShowDial
+            // 
+            buttonShowDial.Location = new Point(5, 5);
+            buttonShowDial.Name = "buttonShowDial";
+            buttonShowDial.Size = new Size(150, 30);
+            buttonShowDial.TabIndex = 1;
+            buttonShowDial.Text = "Выбери файл";
+            buttonShowDial.UseVisualStyleBackColor = true;
+            buttonShowDial.Click += ShowDial;
+            // 
+            // buttonForm2
+            // 
+            buttonForm2.Location = new Point(160, 5);
+            buttonForm2.Name = "buttonForm2";
+            buttonForm2.Size = new Size(150, 30);
+            buttonForm2.TabIndex = 2;
+            buttonForm2.Text = "Склеить логи";
+            buttonForm2.UseVisualStyleBackColor = true;
+            buttonForm2.Click += ShowForm2;
+            // 
+            // buttonDelete
+            // 
+            buttonDelete.Location = new Point(315, 5);
+            buttonDelete.Name = "buttonDelete";
+            buttonDelete.Size = new Size(150, 30);
+            buttonDelete.TabIndex = 3;
+            buttonDelete.Text = "Удалить";
+            buttonDelete.UseVisualStyleBackColor = true;
+            buttonDelete.Click += buttonDelete_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1098, 573);
+            ClientSize = new Size(1525, 930);
+            Controls.Add(buttonDelete);
+            Controls.Add(buttonForm2);
+            Controls.Add(buttonShowDial);
             Controls.Add(dataGridView1);
             Margin = new Padding(3, 2, 3, 2);
             Name = "Form1";
@@ -107,6 +151,8 @@
 
         private OpenFileDialog openFileDialog1;
         private DataGridView dataGridView1;
+        private Button buttonShowDial;
+        private Button buttonForm2;
         private DataGridViewTextBoxColumn nick1;
         private DataGridViewTextBoxColumn weapon1;
         private DataGridViewTextBoxColumn damage1;
@@ -114,5 +160,7 @@
         private DataGridViewTextBoxColumn damage2;
         private DataGridViewTextBoxColumn weapon2;
         private DataGridViewTextBoxColumn nick2;
+        private DataGridViewCheckBoxColumn Delete;
+        private Button buttonDelete;
     }
 }

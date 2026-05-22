@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using static LogEdit.BattleDef;
 using static LogEdit.Player;
 
 namespace LogEdit
