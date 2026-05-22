@@ -40,13 +40,11 @@ namespace LogEdit
             battles.Clear();
             dataGridView1.Rows.Clear();
 
-            battlesData = [];
             using (StreamReader sr = new(openFileDialog1.FileName))
             {
                 List<Player> players1 = [];
                 List<Player> players2 = [];
                 List<string> weapons = [];
-                List<string> battleData = [];
                 Battle battle = new();
                 int current_round = 1;
 
@@ -54,7 +52,7 @@ namespace LogEdit
                 {
                     string line = sr.ReadLine();
                     string relevantPart = line[15..];
-                    battleData.Add(line);
+
                     if (relevantPart.StartsWith("====== starting level ======"))
                     {
                         if (relevantPart.Contains("hangar")) // если бой завершился некорректно
@@ -63,7 +61,6 @@ namespace LogEdit
                             players2.Clear();
                             battle = new();
                             current_round = 1;
-                            battleData = [];
                         }
                     }
                     else if (relevantPart.StartsWith("===== Gameplay '"))
@@ -82,8 +79,6 @@ namespace LogEdit
                         battles.Add(battle);
                         battle = new();
                         current_round = 1;
-                        battlesData.Add(battleData);
-                        battleData = [];
                     }
                     else if (relevantPart.StartsWith("===== Best Of N "))
                     {
@@ -303,13 +298,6 @@ namespace LogEdit
 
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-
-        }
-
-
-        private void buttonDelete_Click(object sender, EventArgs e)
-        {
-            int idx = 0;
             for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
                 if (dataGridView1.Rows[i].Cells[7].Value is true)
@@ -331,18 +319,15 @@ namespace LogEdit
                 {
                     foreach (string s in list)
                     {
-                        sw.WriteLine(s);
+
                     }
                 }
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            saveFileDialog1.ShowDialog(this);
-            if (saveFileDialog1.FileName == "") return;
 
-            textBox_Path.Text = saveFileDialog1.FileName;
+        private void buttonDelete_Click(object sender, EventArgs e)
+        {
 
         }
     }
