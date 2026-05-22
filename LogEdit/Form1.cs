@@ -312,17 +312,13 @@ namespace LogEdit
             int idx = 0;
             for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
-                if (dataGridView1.Rows[i].Cells[7].Value is true)
+                if (duration.Contains(i))
                 {
-                    if (duration.Contains(i))
+                    if (dataGridView1.Rows[i].Cells[7].Value is true)
                     {
                         battlesData.RemoveAt(idx);
                     }
-                }
-                if (duration.Contains(i))
-                {
                     idx++;
-
                 }
             }
             using (StreamWriter sw = new(textBox_Path.Text, false))
@@ -337,13 +333,14 @@ namespace LogEdit
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+
+        private void button_selectPath_Click(object sender, EventArgs e)
         {
+
             saveFileDialog1.ShowDialog(this);
             if (saveFileDialog1.FileName == "") return;
 
             textBox_Path.Text = saveFileDialog1.FileName;
-
         }
     }
 }
