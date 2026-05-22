@@ -41,6 +41,9 @@
             buttonShowDial = new Button();
             buttonForm2 = new Button();
             buttonDelete = new Button();
+            textBox_Path = new TextBox();
+            button_selectPath = new Button();
+            saveFileDialog1 = new SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -131,11 +134,31 @@
             buttonDelete.UseVisualStyleBackColor = true;
             buttonDelete.Click += buttonDelete_Click;
             // 
+            // textBox_Path
+            // 
+            textBox_Path.Location = new Point(471, 10);
+            textBox_Path.Name = "textBox_Path";
+            textBox_Path.Size = new Size(535, 23);
+            textBox_Path.TabIndex = 4;
+            textBox_Path.Text = "C:\\Users\\vipta\\Documents\\sw.log";
+            // 
+            // button_selectPath
+            // 
+            button_selectPath.Location = new Point(1015, 5);
+            button_selectPath.Name = "button_selectPath";
+            button_selectPath.Size = new Size(186, 30);
+            button_selectPath.TabIndex = 5;
+            button_selectPath.Text = "Выбрать путь сохранения";
+            button_selectPath.UseVisualStyleBackColor = true;
+            button_selectPath.Click += button1_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1525, 930);
+            Controls.Add(button_selectPath);
+            Controls.Add(textBox_Path);
             Controls.Add(buttonDelete);
             Controls.Add(buttonForm2);
             Controls.Add(buttonShowDial);
@@ -145,6 +168,7 @@
             Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -162,5 +186,8 @@
         private DataGridViewTextBoxColumn nick2;
         private DataGridViewCheckBoxColumn Delete;
         private Button buttonDelete;
+        private TextBox textBox_Path;
+        private Button button_selectPath;
+        private SaveFileDialog saveFileDialog1;
     }
 }
