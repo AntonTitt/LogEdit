@@ -37,10 +37,10 @@ namespace LogEdit
         {
             openFileDialog1.ShowDialog();
             if (openFileDialog1.FileName == "openFileDialog1") return;
-            battles.Clear();
+            battles = [];
             dataGridView1.Rows.Clear();
-
             battlesData = [];
+            duration = [];
             using (StreamReader sr = new(openFileDialog1.FileName))
             {
                 List<Player> players1 = [];
@@ -321,6 +321,8 @@ namespace LogEdit
                     idx++;
                 }
             }
+            battlesData = [];
+            duration = [];
             using (StreamWriter sw = new(textBox_Path.Text, false))
             {
                 foreach (List<string> list in battlesData)
