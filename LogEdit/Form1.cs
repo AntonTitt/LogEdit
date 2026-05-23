@@ -333,13 +333,14 @@ namespace LogEdit
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+
+        private void button_selectPath_Click(object sender, EventArgs e)
         {
+
             saveFileDialog1.ShowDialog(this);
             if (saveFileDialog1.FileName == "") return;
 
             textBox_Path.Text = saveFileDialog1.FileName;
-
         }
     }
 }

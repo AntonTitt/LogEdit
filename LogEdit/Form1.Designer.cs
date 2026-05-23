@@ -150,7 +150,7 @@
             button_selectPath.TabIndex = 5;
             button_selectPath.Text = "Выбрать путь сохранения";
             button_selectPath.UseVisualStyleBackColor = true;
-            button_selectPath.Click += button1_Click;
+            button_selectPath.Click += button_selectPath_Click;
             // 
             // Form1
             // 
