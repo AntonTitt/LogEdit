@@ -41,6 +41,7 @@ namespace LogEdit
             dataGridView1.Rows.Clear();
             battlesData = [];
             duration = [];
+            maxplayers = 0;
             using (StreamReader sr = new(openFileDialog1.FileName))
             {
                 List<Player> players1 = [];
@@ -316,13 +317,11 @@ namespace LogEdit
                 {
                     if (dataGridView1.Rows[i].Cells[7].Value is true)
                     {
-                        battlesData.RemoveAt(idx);
+                        battlesData.RemoveAt(idx--);
                     }
                     idx++;
                 }
             }
-            battlesData = [];
-            duration = [];
             using (StreamWriter sw = new(textBox_Path.Text, false))
             {
                 foreach (List<string> list in battlesData)
@@ -333,6 +332,8 @@ namespace LogEdit
                     }
                 }
             }
+            battlesData = [];
+            duration = [];
         }
 
 
